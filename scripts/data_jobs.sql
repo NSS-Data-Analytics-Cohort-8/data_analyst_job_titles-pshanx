@@ -52,6 +52,7 @@ WHERE star_rating ISNULL;
 		FROM data_analyst_jobs
 		WHERE star_rating ISNULL;
 			--I understand that these two queries are not equivalent, but I don't know why.
+			--END OF TINKER
 
 
 
@@ -101,12 +102,82 @@ WHERE location = 'CA';
 
 --9.	Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
 
-SELECT DISTINCT (company)
+SELECT DISTINCT (company), ROUND(AVG(star_rating), 2) as companywide_avg_rating
+FROM data_analyst_jobs
+WHERE review_count >5000
+GROUP BY company
+ORDER BY companywide_avg_rating desc;
+
+	--ANSWER: 41
+	
+	
+	
+			--Tinker Break
+			
+			SELECT DISTINCT(company), COUNT(location) AS number_of_locations
+			FROM data_analyst_jobs
+			GROUP BY company
+			ORDER BY number_of_locations DESC;
+			
+			SELECT company, location
+			FROM data_analyst_jobs
+			WHERE company = 'Capgemini';
+			
+			SELECT company, location AS by_state, COUNT(location) AS per_state
+			FROM data_analyst_jobs
+			WHERE company = 'Capgemini'
+			GROUP BY by_state, company
+			ORDER BY by_state ASC, per_state DESC;
+			
+				--This last query was the end result of 5 minutes of tinkering. Documentation is proving to be difficult. Life moves fast in SQL.
+				--the clause (ORDER BY by_state ASC, per_state DESC;) doesn't have much meaning when hunting down a single company, but keeps things nice and clean when we're zoomed out.
+
+			SELECT company, location AS by_state, COUNT(location) AS per_state
+			FROM data_analyst_jobs
+			GROUP BY by_state, company
+			ORDER BY by_state ASC, per_state DESC;
+			
+			--END of TINKER
+
+
+
 --10.	Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
+
+SELECT DISTINCT (company), ROUND(AVG(star_rating), 2) as companywide_avg_rating
+FROM data_analyst_jobs
+WHERE review_count >5000
+GROUP BY company
+ORDER BY companywide_avg_rating desc;
+
+	--ANSWER: American Express with 4.199, rounded to 4.20
 
 --11.	Find all the job titles that contain the word ‘Analyst’. How many different job titles are there? 
 
+--YES DUPES
+SELECT title
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%';
+
+SELECT COUNT(title)
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%';
+
+--NO DUPES
+SELECT DISTINCT(title)
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%';
+
+SELECT COUNT(DISTINCT(title))
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%';
+	
+	--ANSWER: 1636(YES DUPES) of 754 (NO DUPES)
+
 --12.	How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
+
+SELECT title
+FROM data_analyst_jobs
+WHERE title NOT LIKE '%Analyst', '%Analytics%';
 
 --**BONUS:**
 --You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
