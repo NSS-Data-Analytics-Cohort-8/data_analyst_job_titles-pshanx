@@ -182,6 +182,8 @@ AND title NOT LIKE '%Analytics%';
 
 	--ANSWER: 39, and they all lack proper capitalization.
 
+
+
 --**BONUS:**
 --You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
 
@@ -190,6 +192,16 @@ FROM data_analyst_jobs
 WHERE skill = 'SQL' 
 AND days_since_posting >21;
 
+	--CORRECTION
+
+SELECT domain, COUNT(domain) AS count_domain
+FROM data_analyst_jobs
+WHERE skill = 'SQL' 
+AND days_since_posting >21
+GROUP by domain;
+
+
+
 -- - Disregard any postings where the domain is NULL. 
 
 SELECT domain
@@ -197,6 +209,17 @@ FROM data_analyst_jobs
 WHERE skill = 'SQL' 
 AND days_since_posting >21
 AND domain NOTNULL;
+
+	--CORRECTION
+	
+SELECT domain, COUNT(domain) AS count_domain
+FROM data_analyst_jobs
+WHERE skill = 'SQL' 
+AND days_since_posting >21
+AND domain NOTNULL
+GROUP by domain;
+
+
 
 -- - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
 
@@ -208,5 +231,32 @@ AND domain NOTNULL
 GROUP by domain
 ORDER by COUNT(domain) DESC;
 
+	--CORRECTION
+
+SELECT domain, COUNT(domain) AS count_domain
+FROM data_analyst_jobs
+WHERE skill = 'SQL' 
+AND days_since_posting >21
+AND domain NOTNULL
+GROUP by domain
+ORDER by COUNT(domain) DESC;
+
+	--CHECKING THE WORK
+	
+SELECT domain, COUNT(domain) AS count_domain, days_since_posting
+FROM data_analyst_jobs
+WHERE skill = 'SQL' 
+AND days_since_posting >21
+AND domain NOTNULL
+GROUP by domain, days_since_posting
+ORDER by COUNT(domain) DESC;
+
+
+
 --  - Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
 
+	--ANSWER: 
+		--Consulting and Business Services - 5 jobs
+		--Consumer Goods and Services - 2 jobs
+		--Computers and Electronics - 1 job
+		--Internet and Software - 1 job
