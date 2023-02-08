@@ -159,31 +159,38 @@ ORDER BY companywide_avg_rating desc;
 --YES DUPES
 SELECT title
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%';
+WHERE title LIKE '%_nalyst%'
+OR title LIKE '%ANALYST';
 
 SELECT COUNT(title)
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%';
+WHERE title LIKE '%_nalyst%'
+OR title LIKE '%ANALYST';
 
 --NO DUPES
 SELECT DISTINCT(title)
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%';
+WHERE title LIKE '%_nalyst%'
+OR title LIKE '%ANALYST';
 
 SELECT COUNT(DISTINCT(title))
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%';
+WHERE title LIKE '%_nalyst%'
+OR title LIKE '%ANALYST';
+
 	
-	--ANSWER: 1636(YES DUPES) of 754 (NO DUPES)
+	--ANSWER: 1659(YES DUPES) of 765 (NO DUPES)
 
 --12.	How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
 
 SELECT title
 FROM data_analyst_jobs
-WHERE title NOT LIKE '%Analyst%' 
-AND title NOT LIKE '%Analytics%';
+WHERE title NOT LIKE '%_nalyst%' 
+AND title NOT LIKE '%_nalytics%'
+AND title NOT LIKE '%ANALYST%'
+AND title NOT LIKE '%ANALYTICS%';
 
-	--ANSWER: 39, and they all lack proper capitalization.
+	--ANSWER: They are all for people proficient with Tableau.
 
 
 
@@ -263,3 +270,12 @@ ORDER by COUNT(domain) DESC;
 		--Consumer Goods and Services - 2 jobs
 		--Computers and Electronics - 1 job
 		--Internet and Software - 1 job
+		
+		
+--Extra Work
+--For each company, give the company name and the difference between its star rating and the national average star rating.
+
+SELECT DISTINCT(company), location as branch, star_rating, AVG(star_rating) as nat_avg_star_rating
+FROM data_analyst_jobs
+GROUP by company, 
+ORDER by company;
