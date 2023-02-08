@@ -186,9 +186,9 @@ OR title LIKE '%ANALYST';
 SELECT title
 FROM data_analyst_jobs
 WHERE title NOT LIKE '%_nalyst%' 
-AND title NOT LIKE '%_nalytics%'
-AND title NOT LIKE '%ANALYST%'
-AND title NOT LIKE '%ANALYTICS%';
+	AND title NOT LIKE '%_nalytics%'
+	AND title NOT LIKE '%ANALYST%'
+	AND title NOT LIKE '%ANALYTICS%';
 
 	--ANSWER: They are all for people proficient with Tableau.
 
@@ -275,7 +275,27 @@ ORDER by COUNT(domain) DESC;
 --Extra Work
 --For each company, give the company name and the difference between its star rating and the national average star rating.
 
-SELECT DISTINCT(company), location as branch, star_rating, AVG(star_rating) as nat_avg_star_rating
+SELECT ROUND(AVG(star_rating), 2)as nat_avg
+FROM data_analyst_jobs;
+
+SELECT DISTINCT(company), ROUND(star_rating-3.79, 2) as vs_nat_avg
 FROM data_analyst_jobs
-GROUP by company, 
-ORDER by company;
+WHERE star_rating NOTNULL
+GROUP by company, vs_nat_avg
+ORDER by vs_nat_avg DESC;
+
+SELECT *
+FROM data_analyst_jobs
+WHERE company = 'Concerted Care Group';
+
+SELECT DISTINCT(company), 
+	SUM(review_count) as review_count, 
+	ROUND(AVG(star_rating), 2) as company_rating,
+	ROUND(star_rating-3.79, 2) as vs_nat_avg
+FROM data_analyst_jobs
+WHERE star_rating NOTNULL 
+	AND review_count >10000
+GROUP by company, vs_nat_avg
+ORDER by vs_nat_avg DESC;
+
+	--QUESTION: why is there a null company?
