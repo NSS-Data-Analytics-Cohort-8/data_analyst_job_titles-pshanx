@@ -35,9 +35,10 @@ WHERE location = 'KY' OR location ='TN';
 
 SELECT COUNT (star_rating)
 FROM data_analyst_jobs
-WHERE star_rating ISNULL;
+WHERE location = 'TN'
+AND star_rating > 4;
 
-	--ANSWER: 416
+	--ANSWER: 3
 
 	--Tinker break
 		SELECT star_rating
@@ -150,6 +151,8 @@ GROUP BY company
 ORDER BY companywide_avg_rating desc;
 
 	--ANSWER: American Express with 4.199, rounded to 4.20
+
+
 
 --11.	Find all the job titles that contain the word ‘Analyst’. How many different job titles are there? 
 
