@@ -69,12 +69,12 @@ WHERE review_count BETWEEN 500 AND 1000;
 
 --6.	Show the average star rating for companies in each state. The output should show the state as `state` and the average rating for the state as `avg_rating`. Which state shows the highest average rating?
 
-SELECT location AS state, AVG(star_rating) AS avg_rating
+SELECT location AS state, ROUND(AVG(star_rating), 2) AS avg_rating
 FROM data_analyst_jobs
 GROUP BY location
 ORDER BY avg_rating DESC;
 
-	--ANSWER: Nebraska with an average rating of 4.19. 
+	--ANSWER: Nebraska with an average rating of 4.20. 
 	--FUN FACT: I had to look up which state is NE.
 
 
@@ -132,11 +132,6 @@ ORDER BY companywide_avg_rating desc;
 			
 				--This last query was the end result of 5 minutes of tinkering. Documentation is proving to be difficult. Life moves fast in SQL.
 				--the clause (ORDER BY by_state ASC, per_state DESC;) doesn't have much meaning when hunting down a single company, but keeps things nice and clean when we're zoomed out.
-
-			SELECT company, location AS by_state, COUNT(location) AS per_state
-			FROM data_analyst_jobs
-			GROUP BY by_state, company
-			ORDER BY by_state ASC, per_state DESC;
 			
 			--END of TINKER
 
@@ -294,8 +289,17 @@ SELECT DISTINCT(company),
 	ROUND(star_rating-3.79, 2) as vs_nat_avg
 FROM data_analyst_jobs
 WHERE star_rating NOTNULL 
-	AND review_count >10000
+	AND review_count >1000
 GROUP by company, vs_nat_avg
 ORDER by vs_nat_avg DESC;
+
+SELECT DISTINCT (da1.company) as company,
+	ROUND(da1.star_rating, 2) as company_rating,
+	ROUND(AVG(da2.star_rating), 2) as nat_avg
+FROM data_analyst_jobs AS da1
+INNER JOIN data_analyst_jobs as da2
+	ON da1.company = da2.company
+GROUP BY da1.company, da1.star_rating;
+
 
 	--QUESTION: why is there a null company?
