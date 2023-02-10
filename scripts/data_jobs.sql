@@ -279,6 +279,11 @@ WHERE star_rating NOTNULL
 GROUP by company, vs_nat_avg
 ORDER by vs_nat_avg DESC;
 
+	--Works, but uses two queries.
+
+
+
+	--Tinker time
 SELECT *
 FROM data_analyst_jobs
 WHERE company = 'Concerted Care Group';
@@ -293,13 +298,36 @@ WHERE star_rating NOTNULL
 GROUP by company, vs_nat_avg
 ORDER by vs_nat_avg DESC;
 
+	--END TINKER
+
 SELECT DISTINCT (da1.company) as company,
 	ROUND(da1.star_rating, 2) as company_rating,
-	ROUND(AVG(da2.star_rating), 2) as nat_avg
+	ROUND(AVG(da2.star_rating)-da1.star_rating, 2) as nat_avg
 FROM data_analyst_jobs AS da1
 INNER JOIN data_analyst_jobs as da2
 	ON da1.company = da2.company
 GROUP BY da1.company, da1.star_rating;
 
+	--Nope
+	
+SELECT company,
+	ROUND(AVG(star_rating), 2) as star_rating
+FROM data_analyst_jobs
+	GROUP BY company
+		HAVING ROUND(AVG(star_rating), 2) >=
+		(select AVG(star_rating) FROM data_analyst_jobs)
+	ORDER BY star_rating DESC;
+	
+	--No, but educational
+	
+SELECT company,
+	ROUND(AVG(star_rating),2) as company_stars,
+	ROUND(AVG(star_rating) - (SELECT AVG(star_rating) FROM data_analyst_jobs), 2) as vs_nat_avg
+FROM data_analyst_jobs
+WHERE star_rating NOTNULL
+	GROUP BY company
+	ORDER BY vs_nat_avg DESC;
+	
+	--THAT'S A BINGO. 
+	--But I'm also super pissed because it was staring me in the face from the jump, and after excel's index/match shenanigans, I should have thought to just plug in a new select clause
 
-	--QUESTION: why is there a null company?
