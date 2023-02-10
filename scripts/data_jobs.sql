@@ -180,7 +180,7 @@ OR title LIKE '%ANALYST';
 
 SELECT title
 FROM data_analyst_jobs
-WHERE title NOT LIKE '%_nalyst%' 
+WHERE title NOT LIKE '%_nalyst%'
 	AND title NOT LIKE '%_nalytics%'
 	AND title NOT LIKE '%ANALYST%'
 	AND title NOT LIKE '%ANALYTICS%';
@@ -192,79 +192,95 @@ WHERE title NOT LIKE '%_nalyst%'
 --**BONUS:**
 --You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
 
-SELECT domain
+		--NOTE: most of the bonus is fucked because I didn't wildcard SQL.
+
+							SELECT domain
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21;
+
+								--CORRECTION
+
+							SELECT domain, COUNT(domain) AS count_domain
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21
+							GROUP by domain;
+
+
+
+							-- - Disregard any postings where the domain is NULL. 
+
+							SELECT domain
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21
+							AND domain NOTNULL;
+
+								--CORRECTION
+
+							SELECT domain, COUNT(domain) AS count_domain
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21
+							AND domain NOTNULL
+							GROUP by domain;
+
+
+
+							-- - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
+
+							SELECT domain
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21
+							AND domain NOTNULL
+							GROUP by domain
+							ORDER by COUNT(domain) DESC;
+
+								--CORRECTION
+
+							SELECT domain, COUNT(domain) AS count_domain
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21
+							AND domain NOTNULL
+							GROUP by domain
+							ORDER by COUNT(domain) DESC;
+
+								--CHECKING THE WORK
+
+							SELECT domain, COUNT(domain) AS count_domain, days_since_posting
+							FROM data_analyst_jobs
+							WHERE skill = 'SQL' 
+							AND days_since_posting >21
+							AND domain NOTNULL
+							GROUP by domain, days_since_posting
+							ORDER by COUNT(domain) DESC;
+
+
+
+							--  - Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
+
+								--ANSWER: 
+									--Consulting and Business Services - 5 jobs
+									--Consumer Goods and Services - 2 jobs
+									--Computers and Electronics - 1 job
+									--Internet and Software - 1 job
+
+
+--Forgot to wildcard SQL, and so ended up short a lot of listings, so it should look more like this:
+
+SELECT domain,
+	COUNT(domain) as count_domain
 FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21;
-
-	--CORRECTION
-
-SELECT domain, COUNT(domain) AS count_domain
-FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21
-GROUP by domain;
-
-
-
--- - Disregard any postings where the domain is NULL. 
-
-SELECT domain
-FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21
-AND domain NOTNULL;
-
-	--CORRECTION
-	
-SELECT domain, COUNT(domain) AS count_domain
-FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21
-AND domain NOTNULL
-GROUP by domain;
-
-
-
--- - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
-
-SELECT domain
-FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21
-AND domain NOTNULL
-GROUP by domain
-ORDER by COUNT(domain) DESC;
-
-	--CORRECTION
-
-SELECT domain, COUNT(domain) AS count_domain
-FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21
-AND domain NOTNULL
-GROUP by domain
-ORDER by COUNT(domain) DESC;
-
-	--CHECKING THE WORK
-	
-SELECT domain, COUNT(domain) AS count_domain, days_since_posting
-FROM data_analyst_jobs
-WHERE skill = 'SQL' 
-AND days_since_posting >21
-AND domain NOTNULL
-GROUP by domain, days_since_posting
-ORDER by COUNT(domain) DESC;
-
-
-
---  - Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
-
-	--ANSWER: 
-		--Consulting and Business Services - 5 jobs
-		--Consumer Goods and Services - 2 jobs
-		--Computers and Electronics - 1 job
-		--Internet and Software - 1 job
+WHERE skill LIKE '%SQL%'
+	AND days_since_posting >21
+	AND domain NOTNULL
+GROUP BY domain
+ORDER by count_domain DESC
+LIMIT 4;
+		
 		
 		
 --Extra Work
